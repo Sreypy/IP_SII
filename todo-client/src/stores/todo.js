@@ -28,35 +28,43 @@ export const useTodoStore = defineStore("todo", {
     },
 
     // Toggle completed status of a todo
-    toggleStatus(id) {
-      const index = this.todos.findIndex((t) => t.id == id);
-      if (index >= 0) {
-        this.todos[index].completedAt = this.todos[index].completedAt
-          ? null
-          : new Date().toISOString();
+    async toggleStatus(id) {
+      try {
+        const todo = this.todos.find((t) => t.id == id);
+        if (todo) {
+          const endpoint = todo.completedAt ? `${id}/pending` : `${id}/done`;
+          await axios.patch(`http://localhost:3100/tasks/${endpoint}`);
+          // Update local state
+          todo.completedAt = todo.completedAt ? null : new Date().toISOString();
+        }
+      } catch (error) {
+        console.error("Failed to toggle status:", error);
       }
     },
 
     // Add a new todo
-    addTodo(name) {
-      // Generate a new ID safely
-      const newId =
-        this.todos.length > 0
-          ? Math.max(...this.todos.map((t) => t.id)) + 1
-          : 1;
-
-      this.todos.push({
-        id: newId,
-        name,
-        description: "description",
-        createdAt: new Date().toISOString(),
-        completedAt: null,
-      });
+    async addTodo(name) {
+      try {
+        const response = await axios.post("http://localhost:3100/tasks", {
+          name,
+          description: "description",
+        });
+        this.todos.push(response.data);
+      } catch (error) {
+        console.error("Failed to add todo:", error);
+      }
     },
 
     // Clear all todos
-    clearAll() {
-      this.todos = [];
+    async clearAll() {
+      try {
+        for (const todo of this.todos) {
+          await axios.delete(`http://localhost:3100/tasks/${todo.id}`);
+        }
+        this.todos = [];
+      } catch (error) {
+        console.error("Failed to clear todos:", error);
+      }
     },
   },
 });
