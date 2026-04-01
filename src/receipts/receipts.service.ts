@@ -4,12 +4,15 @@ import { UpdateReceiptDto } from './dto/update-receipt.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Receipt } from '../database/entities/receipt.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ReceiptsService {
   constructor(
     @InjectRepository(Receipt)
     private readonly receiptRepo: Repository<Receipt>,
+    private readonly notificationsService: NotificationsService,
+
   ) {}
 
   findAll() {
@@ -22,16 +25,25 @@ export class ReceiptsService {
     return {};
   }
 
-  create(dto: CreateReceiptDto) {
-    // Implement logic
-    const receipt = this.receiptRepo.create({
+  async create(dto: CreateReceiptDto) {
+  const receipt = this.receiptRepo.create({
     issuedAt: new Date(dto.issuedAt),
     name: dto.name,
     amount: dto.amount,
   });
 
-  return this.receiptRepo.save(receipt);
-  }
+  // Save first
+  const saved = await this.receiptRepo.save(receipt);
+
+  // Then notify
+  this.notificationsService.notify('receipt_created', {
+    receiptId: saved.receiptId,
+    amount: saved.amount,
+  });
+
+  // Finally return
+  return saved;
+}
 
   update(id: string, dto: UpdateReceiptDto) {
     // Implement logic

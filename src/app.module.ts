@@ -5,11 +5,14 @@ import { ReceiptsModule } from './receipts/receipts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Receipt } from './database/entities/receipt.entity';
 import * as dotenv from 'dotenv';
+import { NotificationsModule} from './notifications/notifications.module';
+import { OrdersModule } from './orders/orders.module';
 dotenv.config();
 
 @Module({
   imports: [
     ReceiptsModule,
+    NotificationsModule,
     TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'localhost',
@@ -20,7 +23,7 @@ dotenv.config();
     entities: [Receipt],
     synchronize: true,
   }),
-  ReceiptsModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
