@@ -1,7 +1,8 @@
-// src/orders/orders.controller.ts
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
+import { ApiKeyGuard } from 'src/common/guards/api-key.guard';
 
+@UseGuards(ApiKeyGuard) // add guards if needed, e.g., AuthGuard
 @Controller('orders') // base route
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}

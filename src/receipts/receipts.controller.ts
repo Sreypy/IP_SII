@@ -6,7 +6,7 @@ import { ApiKeyGuard } from "src/common/guards/api-key.guard";
 import { UseGuards } from "@nestjs/common";
 
 
-// @UseGuards(ApiKeyGuard)
+@UseGuards(ApiKeyGuard)
 @Controller('receipts')
 export class ReceiptsController {
     constructor(private readonly receiptsService: ReceiptsService) {}
