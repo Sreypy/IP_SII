@@ -7,6 +7,7 @@ import { Receipt } from './database/entities/receipt.entity';
 import * as dotenv from 'dotenv';
 import { NotificationsModule} from './notifications/notifications.module';
 import { OrdersModule } from './orders/orders.module';
+import { CoreModule } from './core/core.module';
 dotenv.config();
 
 @Module({
@@ -24,6 +25,7 @@ dotenv.config();
     synchronize: true,
   }),
     OrdersModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
