@@ -8,6 +8,11 @@ import * as dotenv from 'dotenv';
 import { NotificationsModule} from './notifications/notifications.module';
 import { OrdersModule } from './orders/orders.module';
 import { CoreModule } from './core/core.module';
+import { join } from 'path';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { GraphqlModule } from './graphql/graphql.module';
+
 dotenv.config();
 
 @Module({
@@ -26,7 +31,21 @@ dotenv.config();
   }),
     OrdersModule,
     CoreModule,
+
+  // ✅ ADD GRAPHQL HERE
+  GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+
+      // 👉 START with schema-first
+      typePaths: [join(process.cwd(), 'src/graphql/schema/*.graphql')],
+
+      playground: true,
+    }),
+
+    // ✅ your GraphQL resolvers module
+    GraphqlModule,
   ],
+
   controllers: [AppController],
   providers: [AppService],
 })
