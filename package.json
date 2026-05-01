@@ -20,7 +20,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@apollo/server": "^5.5.0",
     "@apollo/server-plugin-landing-page-graphql-playground": "^4.0.1",
+    "@as-integrations/express5": "^1.1.2",
+    "@nestjs/apollo": "^13.4.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
